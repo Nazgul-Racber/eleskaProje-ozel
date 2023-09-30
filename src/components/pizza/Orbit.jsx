@@ -1,0 +1,85 @@
+import React, { useState } from "react";
+import "../../index.css";
+import pizza from "../../helper/pizza1.jpg";
+import Popup from "reactjs-popup";
+import Modal from "./Modal";
+import Slider from "./slider/Slider";
+
+const Orbit = ({ radius }) => {
+  const menu = [
+    { title: "Pizza Porcini" },
+    { title: "Pizza Calzone" },
+    { title: "Pizza Toscana" },
+    { title: "Pizza Capricciosa" },
+    { title: "Pizza Crevetten" },
+    { title: "Pizza Rusticana" },
+    { title: "Pizza Vesuvio" },
+    { title: "Pizza Frutti Di Mare" },
+    { title: "Pizza Bistro" },
+    { title: "Pizza Padrone" },
+    { title: "Pizza Bella" },
+  ];
+  const [orbits] = useState(() =>
+    Array.from({ length: menu.length }, (_, index) => {
+      const angle = (index / (menu.length - 1)) * Math.PI;
+      const x = Math.cos(angle) * radius * 1.18;
+      const y = Math.sin(angle) * radius * 1.1;
+      const menuItem = index % menu.length;
+      return { x, y, menuItem };
+    })
+  );
+  const getOrbitClassName = (index) => {
+    if (index === (menu.length - 1) / 2) {
+      return "orbit flex flex-row-reverse justify-center";
+    } else if (index < menu.length / 2) {
+      return "orbit flex flex-row-reverse pr-6 text-right";
+    } else {
+      return "orbit flex flex-row pl-6";
+    }
+  };
+  return (
+    <>
+      <div className=" h-[80vh] self-center">
+        <div className="flex justify-center">
+          <div className=" relative  h-[510px] w-[1100px] ">
+            <img
+              className="w-96 circle-container left-0 mx-auto  rounded-full"
+              src={pizza}
+              alt="imic"
+            />
+            <div className="relative -bottom-16 ">
+              {orbits.map((orbit, index) => (
+                <div
+                  key={index}
+                  className={getOrbitClassName(index)}
+                  style={{
+                    bottom: orbit.y,
+                    right: orbit.x,
+                    marginRight: 540,
+                    marginBottom: 150,
+                  }}
+                >
+                  <div className="hover:text-2xl hover:cursor-pointer text-xl">
+                    <Popup
+                      trigger={
+                        <p className="w-48 hover:w-56 font-bold font-sans ">
+                          {menu[orbit.menuItem].title}
+                        </p>
+                      }
+                      position="center center"
+                      className=" "
+                    >
+                      <Modal menu={menu[orbit.menuItem].title} />
+                    </Popup>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <Slider/> */}
+    </>
+  );
+};
+export default Orbit;
